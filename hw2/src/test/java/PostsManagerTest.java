@@ -1,10 +1,10 @@
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
+import static org.mockito.Mockito.when;
 
 public class PostsManagerTest {
     private PostsManager postsManager;
@@ -19,12 +19,17 @@ public class PostsManagerTest {
     }
 
     @Test
-    public void getCompanyNamesWithGrowingPrice() {
-        String tag = "итмо";
-//        when(client.getInfo(symbols))
-//                .thenReturn(createAnswer());
-//
-//        List<String> names = stockManager.getCompanyNamesWithGrowingPrice(symbols);
-//        Assert.assertEquals(Arrays.asList("GOOG", "YNDX"), names);
+    public void getFrequencies() {
+        String tag = "#итмо";
+        int hours = 5;
+
+        when(client.getFrequencies(tag, hours)).thenReturn(createAnswer(hours));
+
+        int[] freqs = postsManager.getFrequencies(tag, hours);
+        Assertions.assertEquals(freqs.length, hours);
+    }
+
+    private int[] createAnswer(int length) {
+        return new int[length];
     }
 }
