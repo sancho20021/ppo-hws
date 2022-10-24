@@ -11,6 +11,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RequestSender {
+    private final String host;
+    private final int port;
+
+    public RequestSender(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
     public static class GetRequest {
         public final String route;
         public final Map<String, String> params;
@@ -33,7 +41,7 @@ public class RequestSender {
         }).collect(Collectors.toList());
     }
 
-    public List<HttpResponse<String>> sendRequests(String host, int port, List<GetRequest> requests) {
+    public List<HttpResponse<String>> sendRequests(List<GetRequest> requests) {
         HttpClient client = HttpClient.newHttpClient();
         var httpRequests = requests.stream().map(req -> {
             try {

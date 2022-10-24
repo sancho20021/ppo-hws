@@ -10,7 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @WireMockTest(httpPort = 32453, httpsEnabled = true)
 public class RequestSenderStubTest {
-    private final RequestSender requestSender = new RequestSender();
+    private final RequestSender requestSender = new RequestSender("localhost", 32453);
 
 
     @Test
@@ -20,8 +20,6 @@ public class RequestSenderStubTest {
                         .withHeader("Content-Type", "text/plain")
                         .withBody("pong")));
         List<HttpResponse<String>> result = requestSender.sendRequests(
-                "localhost",
-                32453,
                 List.of(new RequestSender.GetRequest("/ping", Map.of()))
         );
         Assertions.assertEquals(result.get(0).body(), "pong");
