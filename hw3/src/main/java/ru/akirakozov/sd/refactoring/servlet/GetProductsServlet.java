@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
 
 /**
  * @author akirakozov
@@ -19,21 +16,15 @@ public class GetProductsServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            try (Connection c = DriverManager.getConnection(DBManager.TEST_DB)) {
-                Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT");
-                response.getWriter().println("<html><body>");
+            List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT * FROM PRODUCT");
 
-                while (rs.next()) {
-                    String  name = rs.getString("name");
-                    int price  = rs.getInt("price");
-                    response.getWriter().println(name + "\t" + price + "</br>");
-                }
-                response.getWriter().println("</body></html>");
-
-                rs.close();
-                stmt.close();
+            response.getWriter().println("<html><body>");
+            for (DBManager.SqlRow rs : table) {
+                String name = (String) rs.get("name");
+                int price = (Integer) rs.get("price");
+                response.getWriter().println(name + "\t" + price + "</br>");
             }
+            response.getWriter().println("</body></html>");
 
         } catch (Exception e) {
             throw new RuntimeException(e);

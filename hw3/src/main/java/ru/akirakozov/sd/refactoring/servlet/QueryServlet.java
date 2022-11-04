@@ -6,10 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
 
 /**
  * @author akirakozov
@@ -21,85 +18,59 @@ public class QueryServlet extends HttpServlet {
 
         if ("max".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection(DBManager.TEST_DB)) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("<h1>Product with max price: </h1>");
+                List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
+                response.getWriter().println("<html><body>");
+                response.getWriter().println("<h1>Product with max price: </h1>");
 
-                    while (rs.next()) {
-                        String name = rs.getString("name");
-                        int price = rs.getInt("price");
-                        response.getWriter().println(name + "\t" + price + "</br>");
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
+                for (DBManager.SqlRow row : table) {
+                    String name = (String) row.get("name");
+                    int price = (Integer) row.get("price");
+                    response.getWriter().println(name + "\t" + price + "</br>");
                 }
+                response.getWriter().println("</body></html>");
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else if ("min".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection(DBManager.TEST_DB)) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("<h1>Product with min price: </h1>");
+                List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
+                response.getWriter().println("<html><body>");
+                response.getWriter().println("<h1>Product with min price: </h1>");
 
-                    while (rs.next()) {
-                        String name = rs.getString("name");
-                        int price = rs.getInt("price");
-                        response.getWriter().println(name + "\t" + price + "</br>");
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
+                for (DBManager.SqlRow rs : table) {
+                    String name = (String) rs.get("name");
+                    int price = (Integer) rs.get("price");
+                    response.getWriter().println(name + "\t" + price + "</br>");
                 }
-
+                response.getWriter().println("</body></html>");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else if ("sum".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection(DBManager.TEST_DB)) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT SUM(price) FROM PRODUCT");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("Summary price: ");
+                List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT SUM(price) as SUM FROM PRODUCT");
 
-                    if (rs.next()) {
-                        response.getWriter().println(rs.getInt(1));
-                    }
-                    response.getWriter().println("</body></html>");
+                response.getWriter().println("<html><body>");
+                response.getWriter().println("Summary price: ");
 
-                    rs.close();
-                    stmt.close();
+                if (!table.isEmpty()) {
+                    response.getWriter().println((Integer) table.get(0).get("SUM"));
                 }
-
+                response.getWriter().println("</body></html>");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else if ("count".equals(command)) {
             try {
-                try (Connection c = DriverManager.getConnection(DBManager.TEST_DB)) {
-                    Statement stmt = c.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM PRODUCT");
-                    response.getWriter().println("<html><body>");
-                    response.getWriter().println("Number of products: ");
+                List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT COUNT(*) as CNT FROM PRODUCT");
+                response.getWriter().println("<html><body>");
+                response.getWriter().println("Number of products: ");
 
-                    if (rs.next()) {
-                        response.getWriter().println(rs.getInt(1));
-                    }
-                    response.getWriter().println("</body></html>");
-
-                    rs.close();
-                    stmt.close();
+                if (!table.isEmpty()) {
+                    response.getWriter().println((Integer) table.get(0).get("CNT"));
                 }
-
+                response.getWriter().println("</body></html>");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
