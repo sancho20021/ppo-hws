@@ -1,6 +1,7 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import ru.akirakozov.sd.refactoring.DBManager;
+import ru.akirakozov.sd.refactoring.HtmlBuilder;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,20 +18,20 @@ public class GetProductsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT * FROM PRODUCT");
-
-            response.getWriter().println("<html><body>");
-            for (DBManager.SqlRow rs : table) {
-                String name = (String) rs.get("name");
-                int price = (Integer) rs.get("price");
-                response.getWriter().println(name + "\t" + price + "</br>");
-            }
-            response.getWriter().println("</body></html>");
-
+            response.getWriter().println(buildNamePriceHtml(table));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    private String buildNamePriceHtml(List<DBManager.SqlRow> products) {
+        HtmlBuilder builder = new HtmlBuilder();
+        for (DBManager.SqlRow rs : products) {
+            builder.append(rs.get("name")).append("\t").append(rs.get("price")).println("</br>");
+        }
+        return HtmlBuilder.inBody(builder.toString());
     }
 }
