@@ -29,7 +29,7 @@ public class PostsClient {
                         })
                         .collect(Collectors.toList())
         );
-        var responses = new RequestSender("api.vk.com", 443).sendRequests(requests);
+        var responses = new RequestSender("api.vk.com", 443, true).sendRequests(requests);
         return responses.stream().mapToInt(response ->
                 JsonParser.parseString(response.body())
                         .getAsJsonObject().get("response")

@@ -13,10 +13,12 @@ import java.util.stream.Stream;
 public class RequestSender {
     private final String host;
     private final int port;
+    private final String protocolPrefix;
 
-    public RequestSender(String host, int port) {
+    public RequestSender(String host, int port, boolean https) {
         this.host = host;
         this.port = port;
+        this.protocolPrefix = https ? "https://" : "http://";
     }
 
     public static class GetRequest {
@@ -45,7 +47,7 @@ public class RequestSender {
         HttpClient client = HttpClient.newHttpClient();
         var httpRequests = requests.stream().map(req -> {
             try {
-                var uriBuilder = new URIBuilder("https://" + host + ":" + port + req.route);
+                var uriBuilder = new URIBuilder(protocolPrefix + host + ":" + port + req.route);
                 for (var kv : req.params.entrySet()) {
                     uriBuilder.addParameter(kv.getKey(), kv.getValue());
                 }

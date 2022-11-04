@@ -10,7 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @WireMockTest(httpPort = 32453, httpsEnabled = true)
 public class RequestSenderStubTest {
-    private final RequestSender requestSender = new RequestSender("localhost", 32453);
+    private final RequestSender requestSender = new RequestSender("localhost", 32453, false);
 
 
     @Test

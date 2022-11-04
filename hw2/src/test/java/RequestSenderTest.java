@@ -9,7 +9,7 @@ class RequestSenderTest {
     public void read() {
         var host = "api.vk.com";
         var port = 443;
-        var sender = new RequestSender(host, port);
+        var sender = new RequestSender(host, port, true);
         var route = "/method/newsfeed.search/";
         var params = Map.of(
                 "access_token", Utils.getTokenUnchecked(),
