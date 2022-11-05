@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * @author akirakozov
@@ -21,8 +22,8 @@ public class AddProductServlet extends HttpServlet {
             String sql = "INSERT INTO PRODUCT " +
                     "(NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
             DBManager.executeUpdate(sql);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while executing SQL: ", e);
         }
 
         response.setContentType("text/html");

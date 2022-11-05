@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,8 +46,8 @@ public class QueryServlet extends HttpServlet {
             } else {
                 responseToWrite = "Unknown command: " + command;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while SQL execution: ", e);
         }
         response.getWriter().println(responseToWrite);
 
