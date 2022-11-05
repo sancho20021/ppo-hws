@@ -19,48 +19,36 @@ public class QueryServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String command = request.getParameter("command");
 
-        if ("max".equals(command)) {
-            try {
+        String responseToWrite;
+        try {
+            if ("max".equals(command)) {
                 List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1");
-                response.getWriter().println(buildNamePriceWithHeaderHtml(table, "Product with max price: "));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else if ("min".equals(command)) {
-            try {
+                responseToWrite = buildNamePriceWithHeaderHtml(table, "Product with max price: ");
+            } else if ("min".equals(command)) {
                 List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1");
-                response.getWriter().println(buildNamePriceWithHeaderHtml(table, "Product with min price: "));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else if ("sum".equals(command)) {
-            try {
+                responseToWrite = buildNamePriceWithHeaderHtml(table, "Product with min price: ");
+            } else if ("sum".equals(command)) {
                 List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT SUM(price) as SUM FROM PRODUCT");
-                String html = buildKeyOValueHtml(
+                responseToWrite = buildKeyOValueHtml(
                         "Summary price", table.isEmpty()
                                 ? Optional.empty()
                                 : Optional.of(table.get(0).get("SUM").toString())
                 );
-                response.getWriter().println(html);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else if ("count".equals(command)) {
-            try {
+            } else if ("count".equals(command)) {
                 List<DBManager.SqlRow> table = DBManager.executeQuery("SELECT COUNT(*) as CNT FROM PRODUCT");
-                String html = buildKeyOValueHtml(
+                responseToWrite = buildKeyOValueHtml(
                         "Number of products",
                         table.isEmpty()
                                 ? Optional.empty()
                                 : Optional.of(table.get(0).get("CNT").toString())
                 );
-                response.getWriter().println(html);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            } else {
+                responseToWrite = "Unknown command: " + command;
             }
-        } else {
-            response.getWriter().println("Unknown command: " + command);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        response.getWriter().println(responseToWrite);
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
