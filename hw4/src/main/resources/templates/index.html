@@ -1,0 +1,48 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <title>Task Lists</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+
+<div>
+    <h1>Your task lists</h1>
+    <th:block th:each="taskList : ${taskLists}">
+        <div>
+            <h4 th:text="${taskList.getName()}"></h4>
+            <th:block th:each="task : ${taskList.getTasks()}">
+                <th:block th:switch="${task.isCompleted()}">
+                    <form th:case="false"
+                          th:action="@{/complete-task(taskList=${taskList.getName()},task=${task.getName()})}"
+                          method="POST">
+                        <button type="submit" th:text="${task.getName()}"></button>
+                    </form>
+                    <form th:case="true"
+                          th:action="@{/uncomplete-task(taskList=${taskList.getName()},task=${task.getName()})}"
+                          method="POST">
+                        <button type="submit"><s th:text="${task.getName()}"></s></button>
+                    </form>
+                </th:block>
+            </th:block>
+        </div>
+    </th:block>
+</div>
+
+<h3>Add task to task list</h3>
+<form method="POST" action="/add-task">
+    <label for="task list">Task list</label>
+    <input type="text" id="task list" th:name="taskList"/>
+    <label for="task">Task</label>
+    <input type="text" id="task" th:name="task"/>
+    <input type="submit">
+</form>
+
+<h3>Add new task list</h3>
+<form th:method="POST" action="/create-task-list">
+    <label for="name">name</label>
+    <input type="text" id="name" th:name="name"/>
+    <input type="submit">
+</form>
+</body>
+</html>
