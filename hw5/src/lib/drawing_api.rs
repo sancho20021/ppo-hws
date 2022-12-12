@@ -1,5 +1,3 @@
-use crate::apis::{draw::Draw, simple_svg::SimpleSvg};
-
 #[derive(Debug, PartialEq, Eq)]
 pub struct Point {
     pub x: u32,

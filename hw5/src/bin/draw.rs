@@ -5,7 +5,6 @@ use my_lib::{
     apis::{draw::Draw, simple_svg::SimpleSvg},
     drawing_api::DrawingApi,
     graph::{
-        graph_impls::read_graph,
         node_projectors::{ArchimedeanSpiralProjector, CircularProjector},
         traits::{DrawGraph, NodeProjector, ReadGraph},
     },
