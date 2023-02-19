@@ -3,10 +3,10 @@ use std::time::Duration;
 
 use actix::prelude::*;
 
-use crate::results_getter::TopResultsGetter;
+use crate::browser::Browser;
 
-use std::sync::Mutex;
 use std::sync::Arc;
+use std::sync::Mutex;
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -23,7 +23,7 @@ pub struct Query {
 }
 
 pub struct ChildActor {
-    pub top_results_getter: TopResultsGetter,
+    pub top_results_getter: Browser,
 }
 
 impl Actor for ChildActor {
