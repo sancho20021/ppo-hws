@@ -5,6 +5,9 @@ use actix::prelude::*;
 
 use crate::results_getter::TopResultsGetter;
 
+use std::sync::Mutex;
+use std::sync::Arc;
+
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct ResultsTop {
@@ -49,6 +52,7 @@ impl Handler<Query> for ChildActor {
 pub struct MasterActor {
     pub apis: Vec<Addr<ChildActor>>,
     pub results: HashMap<String, Vec<String>>,
+    pub results_storage: Arc<Mutex<HashMap<String, Vec<String>>>>,
 }
 
 impl Actor for MasterActor {
@@ -56,7 +60,8 @@ impl Actor for MasterActor {
 
     fn stopped(&mut self, _ctx: &mut Context<Self>) {
         println!("Master Actor is stopped");
-        println!("Aggregated tops: {:?}", self.results);
+        let mut results_storage = self.results_storage.try_lock().unwrap();
+        *results_storage = self.results.clone();
     }
 }
 
