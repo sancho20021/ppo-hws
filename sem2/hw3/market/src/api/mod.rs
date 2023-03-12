@@ -75,7 +75,7 @@ pub struct StockView {
     price: StockPrice,
 }
 
-#[get("/get-price-and-numper/{company}")]
+#[get("/get-price-and-number/{company}")]
 pub async fn get_price_and_number(
     market: web::Data<MutexedMarket>,
     company: Path<String>,

@@ -28,10 +28,6 @@ pub struct Market {
     stocks: HashMap<String, Stock>,
 }
 
-pub struct MutexedMarket {
-    pub market: Mutex<Market>,
-}
-
 impl Market {
     pub fn new() -> Self {
         Self {
@@ -108,6 +104,19 @@ impl Market {
 
     fn random_price() -> StockPrice {
         rand::thread_rng().gen_range(1..100)
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct MutexedMarket {
+    pub market: async_std::sync::Arc<Mutex<Market>>,
+}
+
+impl MutexedMarket {
+    pub fn new() -> Self {
+        Self {
+            market: async_std::sync::Arc::new(Mutex::new(Market::new())),
+        }
     }
 }
 
