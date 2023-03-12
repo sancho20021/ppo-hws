@@ -6,7 +6,7 @@ pub struct MarketClient {
     server_address: String,
 }
 
-type StockPrice = usize;
+pub type StockPrice = usize;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct StockView {
